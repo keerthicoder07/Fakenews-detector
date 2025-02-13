@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -70,6 +71,8 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 =======
+=======
+>>>>>>> 2f0c20f571c6e673a0566d75d76ee70b5046d56b
 # Fake News Detection API
 
 ## Overview
@@ -197,4 +200,7 @@ Feel free to contribute by submitting **pull requests** or reporting issues!
 ## License
 This project is **MIT Licensed**. See `LICENSE` for details.
 
+<<<<<<< HEAD
+>>>>>>> 2f0c20f571c6e673a0566d75d76ee70b5046d56b
+=======
 >>>>>>> 2f0c20f571c6e673a0566d75d76ee70b5046d56b
