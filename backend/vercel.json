@@ -12,10 +12,11 @@
       }
     ],
     "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "/backend/main.py"
-      },
+        {
+            "src": "/api/(.*)",
+            "dest": "/backend/main.py",
+            "methods": ["GET", "POST", "OPTIONS"]
+          },
       {
         "src": "/(.*)",
         "dest": "/build/index.html"
