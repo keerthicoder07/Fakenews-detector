@@ -26,7 +26,7 @@ function App() {
     }
 
     try {
-      const response = await fetch("https://your-backend.vercel.app/predict", {
+      const response = await fetch("/api/predict", {
         method: "POST",
         body: formData,
       });
