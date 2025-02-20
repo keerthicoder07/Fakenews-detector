@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 backend/fine_tune_liar_model/
 *.safetensors
+
+backend\.env

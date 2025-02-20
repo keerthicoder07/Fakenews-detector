@@ -1,67 +1,80 @@
-from fastapi import FastAPI, File, UploadFile, Form
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
+import os
+import requests
+from fastapi import FastAPI, HTTPException, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+load_dotenv()
+app = FastAPI()
 
-# Load Model & Tokenizer
-MODEL_PATH = "./fine_tune_liar_model"
+# Enable CORS for frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-try:
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
-except Exception as e:
-    raise RuntimeError(f"Error loading model: {e}")
+# Hugging Face API Setup
+API_KEY = os.getenv("HF_API_KEY")
+if not API_KEY:
+    raise RuntimeError("Hugging Face API key is missing. Set HF_API_KEY as an environment variable.")
 
+MODEL_ID = "Keerthi0207/Fakenewsdetector"
+API_URL = f"https://api-inference.huggingface.co/models/{MODEL_ID}"
+HEADERS = {"Authorization": f"Bearer {API_KEY}"}
+
+# Label Mapping
 LABELS = {
     0: "False",
     1: "Barely True",
     2: "Half True",
-    3: "True",
+    3: "Mostly True",
     4: "True",
     5: "Pants on Fire",
 }
 
-app = FastAPI()
-
-# CORS Configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Adjust if needed
-    allow_credentials=True,
-    allow_methods=["POST"],
-    allow_headers=["*"],
-)
-
-async def get_text_from_file(file: UploadFile) -> str:
-    """ Reads the content of a .txt file and extracts text. """
-    if file.filename.endswith(".txt"):
-        return (await file.read()).decode("utf-8").strip()
-    return None  # Unsupported format
-
 @app.post("/predict")
 async def predict_news(
-    statement: str = Form(None), 
+    text: str = Form(None), 
     file: UploadFile = File(None)
 ):
-    # Check if statement or file is provided
-    if not statement and not file:
-        return {"error": "Either text input or a .txt file must be provided"}
+    try:
+        if not text and not file:
+            raise HTTPException(status_code=400, detail="Provide either text or a file.")
 
-    # If file is provided, extract text
-    if file:
-        statement = await get_text_from_file(file)
-        if not statement:
-            return {"error": "Unsupported file format. Only .txt files are allowed."}
+        if file:
+            contents = await file.read()
+            text = contents.decode("utf-8").strip()
 
-    # Tokenize and predict
-    inputs = tokenizer(statement, return_tensors="pt", truncation=True, padding=True)
-    
-    with torch.no_grad():
-        outputs = model(**inputs)
+        if not text:
+            raise HTTPException(status_code=400, detail="Text is empty after processing.")
 
-    predicted_label = torch.argmax(outputs.logits, dim=1).item()
-    
-    return {
-        "statement": statement,
-        "prediction": LABELS.get(predicted_label, "Unknown")
-    }
+        payload = {"inputs": text}
+        response = requests.post(API_URL, json=payload, headers=HEADERS)
+
+        if response.status_code == 503:
+            raise HTTPException(status_code=503, detail="Model is loading, try again later.")
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail=response.json())
+
+        result = response.json()
+
+        # ✅ Extract first item if response is nested
+        if isinstance(result, list) and isinstance(result[0], list):
+            result = result[0]  # Unwrap the nested list
+
+        if not isinstance(result, list) or len(result) == 0:
+            raise HTTPException(status_code=500, detail=f"Unexpected model response format: {result}")
+
+        if not isinstance(result[0], dict) or "label" not in result[0] or "score" not in result[0]:
+            raise HTTPException(status_code=500, detail=f"Unexpected model response format: {result}")
+
+        best_prediction = max(result, key=lambda x: x["score"])  # Take the highest score
+        label_index = int(best_prediction["label"].split("_")[-1])
+        label = LABELS.get(label_index, "Unknown")
+
+        return {"label": label, "score": best_prediction["score"]}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

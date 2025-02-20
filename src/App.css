@@ -1,29 +1,42 @@
-/* App.css */
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #000000, #001121);
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0d0d26, #2b1055, #6a0572, #ff007f);
+  background-size: 400% 400%;
+  animation: gradientAnimation 12s ease infinite;
   color: #ff9800; /* Orange text */
   text-align: center;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .container {
-  width: 400px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.1); /* Light overlay */
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4); /* Orange glow */
+  width: 500px; /* Large container */
+  padding: 35px; /* Increased padding */
+  background: rgba(255, 255, 255, 0.1); /* Glass effect */
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  box-shadow: 0 6px 25px rgba(255, 152, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 h1 {
-  color:orangered; /* Orange heading */
-  margin-bottom: 15px;
+  color: #ff9800; /* Orange heading */
+  margin-bottom: 25px;
+  font-size: 28px;
+  font-weight: bold;
+  text-shadow: 0 2px 12px rgba(255, 152, 0, 0.6);
 }
 
 form {
@@ -31,18 +44,25 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 input[type="text"] {
   width: 90%;
-  padding: 10px;
+  padding: 15px;
   border: 2px solid orangered;
-  border-radius: 5px;
-  font-size: 16px;
-  background: #222;
+  border-radius: 8px;
+  font-size: 18px;
+  background: rgba(34, 34, 34, 0.8);
   color: white;
   text-align: center;
+  transition: 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #ff9800;
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
 }
 
 input[type="file"] {
@@ -53,38 +73,42 @@ input[type="file"] {
   width: 90%;
   background: #ff9800;
   color: black;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 12px; /* Reduced padding */
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
   text-align: center;
   transition: 0.3s ease;
+  font-size: 16px; /* Reduced font size */
 }
 
 .file-label:hover {
-  background:orangered;
+  background: orangered;
 }
 
 button {
   width: 90%;
   background: #ff9800;
   color: black;
-  padding: 10px;
+  padding: 12px; /* Reduced padding */
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 16px; /* Reduced font size */
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s ease;
+  box-shadow: 0 3px 12px rgba(255, 152, 0, 0.3);
 }
 
 button:hover {
-  background:orangered;
+  background: orangered;
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.6);
 }
 
 .result {
-  margin-top: 15px;
-  font-size: 18px;
+  margin-top: 25px;
+  font-size: 20px;
   font-weight: bold;
   color: orangered;
+  text-shadow: 0 3px 10px rgba(255, 152, 0, 0.5);
 }

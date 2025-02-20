@@ -192,6 +192,13 @@ axios
 
 ---
 
+## Get the model code from this colab notebook
+
+https://colab.research.google.com/drive/15YpO99UeOhXg448d0-VrlsQxGS3hS9pY?usp=sharing
+
+## Get the liar.py from hugging face dataset to download the train and test data
+
+
 ## Contribution
 Feel free to contribute by submitting **pull requests** or reporting issues!
 
