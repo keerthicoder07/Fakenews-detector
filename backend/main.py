@@ -34,7 +34,7 @@ LABELS = {
     5: "Pants on Fire",
 }
 
-@app.post("/predict")
+@app.post("/api/predict")
 async def predict_news(
     text: str = Form(None), 
     file: UploadFile = File(None)
