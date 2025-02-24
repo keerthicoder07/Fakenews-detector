@@ -3,6 +3,7 @@ import requests
 from fastapi import FastAPI, HTTPException, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from fastapi.staticfiles import StaticFiles
 load_dotenv()
 app = FastAPI()
 
@@ -78,3 +79,4 @@ async def predict_news(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+app.mount("/", StaticFiles(directory="build", html=True), name="static")
