@@ -8,4 +8,4 @@ npm install
 npm run build
 
 # Start FastAPI
-uvicorn .backend main:app
+uvicorn backend.main:app -- reload
